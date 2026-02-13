@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>心动加载中</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #ffe6f2 0%, #ffc2d1 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-family: "Microsoft YaHei", sans-serif;
+            padding: 20px;
+        }
+
+        .text {
+            font-size: 5vw;
+            color: #e63946;
+            text-align: center;
+            padding: 20px 15px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 16px;
+            line-height: 1.4;
+            
+            opacity: 0;
+            filter: blur(20px);
+            transition: all 1.5s ease;
+        }
+
+        .text.show {
+            opacity: 1;
+            filter: blur(0);
+        }
+
+        .text.hide {
+            opacity: 0;
+            filter: blur(15px);
+            transform: scale(0.9);
+        }
+
+        #nextBtn {
+            margin-top: 30px;
+            padding: 18px 28px;
+            font-size: 4.5vw;
+            background: #e63946;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            min-width: 60%;
+            
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.6s;
+        }
+
+        #nextBtn.show {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        @media (min-width: 400px) {
+            .text {
+                font-size: 2rem;
+            }
+            #nextBtn {
+                font-size: 1.1rem;
+                padding: 14px 28px;
+                min-width: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="text" id="text">
+        宝贝，谢谢你走进我的生命里<br>
+        这份心意，只为你而来 💓
+    </div>
+
+    <button id="nextBtn">解锁更多心动 💘</button>
+
+    <script>
+        const text = document.getElementById('text');
+        const nextBtn = document.getElementById('nextBtn');
+
+        setTimeout(() => {
+            text.classList.add('show');
+        }, 300);
+
+        setTimeout(() => {
+            nextBtn.classList.add('show');
+        }, 1800);
+
+        nextBtn.onclick = function () {
+            nextBtn.classList.remove('show');
+            text.classList.add('hide');
+            
+            setTimeout(() => {
+                location.href = 'main.html';
+            }, 1500);
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && nextBtn.classList.contains('show')) {
+                nextBtn.click();
+            }
+        });
+    </script>
+</body>
+</html>
