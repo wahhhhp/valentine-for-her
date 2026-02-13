@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>致我的宝贝 | 情人节快乐</title>
+    <title>致米尔古力·亚森 | 情人节快乐</title>
     <style>
         * {
             margin: 0;
@@ -12,81 +12,418 @@
             font-family: "Microsoft YaHei", 微软雅黑, sans-serif;
         }
 
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            pointer-events: none;
+        }
+
         body {
             background: linear-gradient(135deg, #ffe6f2 0%, #ffc2d1 100%);
             min-height: 100vh;
             padding: 20px;
+            position: relative;
+            scroll-behavior: smooth;
         }
 
         .main-container {
             width: 100%;
             max-width: 800px;
             margin: 0 auto;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            padding: 30px 20px;
-            box-shadow: 0 10px 30px rgba(255, 105, 180, 0.2);
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 24px;
+            padding: 40px 25px;
+            box-shadow: 0 15px 40px rgba(255, 105, 180, 0.15);
             text-align: center;
             margin-top: 20px;
+            z-index: 10;
+            position: relative;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 1.2s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; transform: translateY(0); }
         }
 
         h1 {
-            color: #e63946;
+            background: linear-gradient(90deg, #e63946, #ff8fa3);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
             font-size: 5.5vw;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
             line-height: 1.2;
         }
 
-        .content {
+        h1::after {
+            content: "💘";
+            display: inline-block;
+            margin-left: 10px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        .anniversary {
+            background: #fff0f5;
+            border-radius: 16px;
+            padding: 20px;
+            margin: 25px 0;
+            border: 1px solid #ffccd5;
+        }
+
+        .anniversary h2 {
+            color: #e63946;
+            font-size: 4.8vw;
+            margin-bottom: 15px;
+        }
+
+        .anniversary p {
+            font-size: 4vw;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .love-words {
+            margin: 25px 0;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .love-words .word-item {
             font-size: 4.2vw;
+            color: #e63946;
             line-height: 1.8;
-            color: #333;
-            margin: 20px 0;
+            padding: 0 10px;
+            display: none;
         }
 
-        .photo-container {
-            margin-top: 20px;
+        .love-words .word-item.active {
+            display: block;
+            animation: fade 1s ease;
         }
 
-        .photo-container img {
+        @keyframes fade {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .photo-carousel {
+            margin: 30px 0;
+            position: relative;
             width: 100%;
             max-width: 400px;
-            border-radius: 10px;
-            margin: 0 auto;
-            display: block;
+            margin-left: auto;
+            margin-right: auto;
         }
 
-        .photo-tip {
-            margin-top: 10px;
+        .photo-wrapper {
+            width: 100%;
+            height: 300px;
+            overflow: hidden;
+            border-radius: 16px;
+            box-shadow: 0 8px 20px rgba(255, 105, 180, 0.1);
+            position: relative;
+        }
+
+        .photo-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+
+        .photo-wrapper img.active {
+            opacity: 1;
+        }
+
+        .photo-text {
+            margin-top: 20px;
+            font-size: 4vw;
             color: #e63946;
+            line-height: 1.6;
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+
+        .photo-text.active {
+            opacity: 1;
+        }
+
+        .photo-index {
+            margin-top: 10px;
             font-size: 3.5vw;
+            color: #ff8fa3;
+            opacity: 0.8;
+        }
+
+        .signature {
+            margin-top: 30px;
+            font-size: 4vw;
+            color: #e63946;
+            text-align: right;
+            padding-right: 10px;
+        }
+
+        #backToTop {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #e63946;
+            color: white;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            z-index: 20;
+            box-shadow: 0 4px 10px rgba(230, 57, 70, 0.3);
+        }
+
+        #backToTop.show {
+            opacity: 1;
+            pointer-events: all;
         }
 
         @media (min-width: 400px) {
-            h1 {
-                font-size: 2rem;
-            }
-            .content {
-                font-size: 1.1rem;
-            }
-            .photo-tip {
-                font-size: 0.9rem;
-            }
+            h1 { font-size: 2.2rem; }
+            .anniversary h2 { font-size: 1.5rem; }
+            .anniversary p { font-size: 1rem; }
+            .love-words .word-item { font-size: 1.1rem; }
+            .photo-text { font-size: 1rem; }
+            .photo-index { font-size: 0.9rem; }
+            .signature { font-size: 1rem; }
         }
     </style>
 </head>
 <body>
+    <canvas id="bg-canvas"></canvas>
+
     <div class="main-container">
-        <h1>亲爱的宝贝 💖</h1>
-        <div class="content">
-            这里是主页面啦～<br>
-            你可以在这里添加你们的合照、专属情话、恋爱时间线等内容<br>
-            后续我会帮你完善更多惊喜功能～
+        <h1>亲爱的米尔古力·亚森</h1>
+
+        <div class="anniversary">
+            <h2>✨ 我们的恋爱纪念 ✨</h2>
+            <p>相遇于：2023年09月09日<br>
+               在一起的第 <span id="days">0</span> 天<br>
+               愿我们岁岁年年，满心欢喜 💓</p>
         </div>
-        <div class="photo-container">
-            <img src="https://picsum.photos/400/300" alt="占位图">
-            <p class="photo-tip">替换成你们的合照哦～</p>
+
+        <div class="love-words">
+            <div class="word-item active">你是我藏在微风里的喜欢 💖</div>
+            <div class="word-item">全世界的温柔，都不及你半分 🥰</div>
+            <div class="word-item">想和你一起，从心动到古稀 🤍</div>
+            <div class="word-item">我的偏爱和例外，永远都是你 💌</div>
+            <div class="word-item">遇见你，是我所有美好故事的开始 ✨</div>
+        </div>
+
+        <div class="photo-carousel">
+            <div class="photo-wrapper" id="photoWrapper"></div>
+            <div class="photo-text" id="photoText"></div>
+            <div class="photo-index" id="photoIndex">第 1 / 11 张</div>
+        </div>
+
+        <div class="signature">
+            —— 爱你的我 ❤️
         </div>
     </div>
+
+    <button id="backToTop">⬆️</button>
+
+    <script>
+        class Heart {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.size = Math.random() * 10 + 5;
+                this.heartbeatSpeed = Math.random() * 0.05 + 0.02;
+                this.phase = Math.random() * Math.PI * 2;
+                this.color = `rgba(230, 57, 70, ${Math.random() * 0.6 + 0.4})`;
+            }
+            draw(ctx) {
+                const scale = 1 + Math.sin(this.phase) * 0.3;
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.scale(scale, scale);
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.moveTo(0, -this.size/2);
+                ctx.bezierCurveTo(-this.size, -this.size, -this.size*1.5, this.size/2, 0, this.size);
+                ctx.bezierCurveTo(this.size*1.5, this.size/2, this.size, -this.size, 0, -this.size/2);
+                ctx.closePath();
+                ctx.fill();
+                ctx.restore();
+                this.phase += this.heartbeatSpeed;
+            }
+        }
+
+        class Star {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.size = Math.random() * 3 + 1;
+                this.speed = Math.random() * 0.2 + 0.05;
+                this.alpha = Math.random() * 0.8 + 0.2;
+                this.flashSpeed = Math.random() * 0.02 + 0.01;
+            }
+            draw(ctx) {
+                this.alpha = 0.2 + Math.abs(Math.sin(Date.now() * this.flashSpeed)) * 0.8;
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.fillStyle = `rgba(255, 255, 255, ${this.alpha})`;
+                ctx.beginPath();
+                for (let i = 0; i < 5; i++) {
+                    ctx.lineTo(Math.cos((18 + i * 72) * Math.PI / 180) * this.size, -Math.sin((18 + i * 72) * Math.PI / 180) * this.size);
+                    ctx.lineTo(Math.cos((54 + i * 72) * Math.PI / 180) * this.size / 2.5, -Math.sin((54 + i * 72) * Math.PI / 180) * this.size / 2.5);
+                }
+                ctx.closePath();
+                ctx.fill();
+                ctx.restore();
+                this.y += this.speed;
+                if (this.y > ctx.canvas.height) {
+                    this.y = -10;
+                    this.x = Math.random() * ctx.canvas.width;
+                }
+            }
+        }
+
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        const hearts = [];
+        const stars = [];
+        const HEART_COUNT = 30;
+        const STAR_COUNT = 150;
+
+        for (let i = 0; i < HEART_COUNT; i++) {
+            hearts.push(new Heart(Math.random() * canvas.width, Math.random() * canvas.height));
+        }
+        for (let i = 0; i < STAR_COUNT; i++) {
+            stars.push(new Star(Math.random() * canvas.width, Math.random() * canvas.height));
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            stars.forEach(star => star.draw(ctx));
+            hearts.forEach(heart => heart.draw(ctx));
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        function calculateLoveDays() {
+            const loveStartDate = new Date(2023, 8, 9);
+            const today = new Date();
+            const diffTime = Math.abs(today - loveStartDate);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            document.getElementById('days').textContent = diffDays;
+        }
+        calculateLoveDays();
+
+        let currentWordIndex = 0;
+        const wordItems = document.querySelectorAll('.love-words .word-item');
+        function switchLoveWord() {
+            wordItems[currentWordIndex].classList.remove('active');
+            currentWordIndex = (currentWordIndex + 1) % wordItems.length;
+            wordItems[currentWordIndex].classList.add('active');
+        }
+        setInterval(switchLoveWord, 3000);
+
+        const backToTopBtn = document.getElementById('backToTop');
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 300) backToTopBtn.classList.add('show');
+            else backToTopBtn.classList.remove('show');
+        });
+        backToTopBtn.addEventListener('click', function() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.main-container')) {
+                const heart = document.createElement('div');
+                heart.textContent = '❤️';
+                heart.style.position = 'absolute';
+                heart.style.left = e.clientX + 'px';
+                heart.style.top = e.clientY + 'px';
+                heart.style.fontSize = '20px';
+                heart.style.pointerEvents = 'none';
+                heart.style.animation = 'float 2s ease-out forwards';
+                document.body.appendChild(heart);
+                const style = document.createElement('style');
+                style.textContent = `@keyframes float { 0% { transform: translate(0, 0); opacity: 1; } 100% { transform: translate(0, -100px) rotate(360deg); opacity: 0; } }`;
+                document.head.appendChild(style);
+                setTimeout(() => { heart.remove(); style.remove(); }, 2000);
+            }
+        });
+
+        const photoList = [
+            { imgUrl: "https://s41.ax1x.com/2026/02/13/pZqs6Cq.jpg", text: "我们的第一次真正接触,也是认识你的开始😘（应该是那次玩我不是卧底的时候可惜没照片😕）" },
+            { imgUrl: "https://s41.ax1x.com/2026/02/13/pZqyWWt.jpg", text: "送你的第一个玩偶，这应该是最早的了🧸（但也可能有更早的我相册里没有😬）" },
+            { imgUrl: "https://s41.ax1x.com/2026/02/13/pZqy6dH.jpg", text: "这是最早期约会的照片也是我印象最深一次第，第一次见面第一次牵手，紧张到手心冒汗✨" },
+            { imgUrl: "https://s41.ax1x.com/2026/02/14/pZq6s10.jpg", text: "这是我送你的第一束花，也是第一次给别人买花💐" },
+            { imgUrl: "https://s41.ax1x.com/2026/02/14/pZq6ycV.jpg", text: "陪你过的第一个生日，愿你永远开心，🎂（其实第一次生日我们分手了🤧所以我欠你一次）" },
+            { imgUrl: "https://s41.ax1x.com/2026/02/14/pZq66XT.jpg", text: "这是你第一次给我过生日🎂，我很高兴也很感动，心想着这辈子取定你了（但是！！！！这时候我好丑啊头发😫）" },
+            { imgUrl: "https://s41.ax1x.com/2026/02/14/pZq6R74.jpg", text: "你这张照片是我最喜欢的一张，又帅又美，反正就是喜欢(❤ ω ❤)" },
+            { imgUrl: "https://s41.ax1x.com/2026/02/14/pZq6fAJ.jpg", text: "我第一次座摩天轮，也是和你的第一次，这次是我感觉最费体力的一次约会🤦‍♂️（jnm我也想选个好看的但是照片只能4:3）" },
+            { imgUrl: "https://s41.ax1x.com/2026/02/14/pZqcDVe.jpg", text: "这是我们第一次一起去乐8上班的时候拍的，幸福~（实话实说一直站着真累啊😫）" },
+            { imgUrl: "https://s41.ax1x.com/2026/02/14/pZqcrUH.jpg", text: "这是应该是我们第一次去私人影院拍照了，看电影，吃零食，聊天（还有甜蜜蜜😚）" },
+            { imgUrl: "https://s41.ax1x.com/2026/02/14/pZqcfr8.jpg", text: "这个戒指我到现在没摘过，带着就很幸福❤️" }
+        ];
+
+        const photoWrapper = document.getElementById('photoWrapper');
+        const photoText = document.getElementById('photoText');
+        const photoIndex = document.getElementById('photoIndex');
+        let currentPhotoIndex = 0;
+
+        photoList.forEach((item, index) => {
+            const img = document.createElement('img');
+            img.src = item.imgUrl;
+            img.alt = `我们的照片${index+1}`;
+            if (index === 0) {
+                img.classList.add('active');
+                photoText.textContent = item.text;
+                photoText.classList.add('active');
+            }
+            photoWrapper.appendChild(img);
+        });
+
+        function switchPhoto() {
+            const allImgs = photoWrapper.querySelectorAll('img');
+            allImgs[currentPhotoIndex].classList.remove('active');
+            photoText.classList.remove('active');
+            currentPhotoIndex = (currentPhotoIndex + 1) % photoList.length;
+            allImgs[currentPhotoIndex].classList.add('active');
+            photoText.textContent = photoList[currentPhotoIndex].text;
+            setTimeout(() => { photoText.classList.add('active'); }, 300);
+            photoIndex.textContent = `第 ${currentPhotoIndex + 1} / 11 张`;
+        }
+
+        setInterval(switchPhoto, 8000);
+    </script>
 </body>
 </html>
