@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <!-- 核心：手机视口适配，禁止缩放 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>专属心动 | 请输入密码</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", 微软雅黑, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #ffe6f2 0%, #ffc2d1 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px; /* 手机端左右留边，避免贴边 */
+        }
+
+        /* 登录容器：手机端占满宽度，最大宽度限制 */
+        .login-box {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px 20px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(255, 105, 180, 0.2);
+            width: 100%;
+            max-width: 400px; /* 大屏手机不超宽 */
+            text-align: center;
+        }
+
+        .login-box h2 {
+            color: #e63946;
+            margin-bottom: 30px;
+            font-size: 5vw; /* 相对屏幕宽度，手机自动适配 */
+            line-height: 1.2;
+        }
+
+        /* 密码输入框：手机端加大点击区域 */
+        .password-input {
+            width: 100%;
+            padding: 18px 15px; /* 手机端加高，好点击 */
+            border: 2px solid #ffccd5;
+            border-radius: 10px;
+            font-size: 4.5vw; /* 文字适配手机 */
+            margin-bottom: 20px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .password-input:focus {
+            border-color: #e63946;
+        }
+
+        /* 登录按钮：手机端加高，加大字体 */
+        .login-btn {
+            width: 100%;
+            padding: 18px;
+            background: #e63946;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 4.5vw;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .login-btn:hover {
+            background: #d62828;
+        }
+
+        /* 错误提示：手机端字体适配 */
+        .error-tip {
+            color: #e63946;
+            margin-top: 15px;
+            font-size: 3.5vw;
+            display: none;
+        }
+
+        /* 大屏适配：避免文字过大 */
+        @media (min-width: 400px) {
+            .login-box h2 {
+                font-size: 1.8rem;
+            }
+            .password-input, .login-btn {
+                font-size: 1.1rem;
+            }
+            .error-tip {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-box">
+        <h2>💖 专属心动密码 💖</h2>
+        <input type="password" class="password-input" id="password" placeholder="请输入密码解锁心动">
+        <button class="login-btn" id="loginBtn">解锁我的心意</button>
+        <div class="error-tip" id="errorTip">密码错误啦～再试试😜</div>
+    </div>
+
+    <script>
+        // 自定义密码（可修改）
+        const CORRECT_PASSWORD = "5201314";
+
+        const passwordInput = document.getElementById('password');
+        const loginBtn = document.getElementById('loginBtn');
+        const errorTip = document.getElementById('errorTip');
+
+        // 登录验证
+        loginBtn.addEventListener('click', function() {
+            const inputPwd = passwordInput.value.trim();
+            if (inputPwd === CORRECT_PASSWORD) {
+                window.location.href = 'transition.html';
+            } else {
+                errorTip.style.display = 'block';
+                setTimeout(() => {
+                    errorTip.style.display = 'none';
+                }, 3000);
+                passwordInput.value = '';
+            }
+        });
+
+        // 手机端回车登录
+        passwordInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                loginBtn.click();
+            }
+        });
+    </script>
+</body>
+</html>
