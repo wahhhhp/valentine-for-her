@@ -2,7 +2,6 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <!-- 核心：手机视口适配，禁止缩放 -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>专属心动 | 请输入密码</title>
     <style>
@@ -13,40 +12,51 @@
             font-family: "Microsoft YaHei", 微软雅黑, sans-serif;
         }
 
+        /* 背景画布样式 - 全屏、固定、层级最低 */
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0; /* 保证在登录框下面 */
+            pointer-events: none; /* 不影响点击登录框 */
+        }
+
         body {
             background: linear-gradient(135deg, #ffe6f2 0%, #ffc2d1 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px; /* 手机端左右留边，避免贴边 */
+            padding: 20px;
+            position: relative; /* 让登录框层级高于画布 */
         }
 
-        /* 登录容器：手机端占满宽度，最大宽度限制 */
         .login-box {
             background: rgba(255, 255, 255, 0.95);
             padding: 40px 20px;
             border-radius: 20px;
             box-shadow: 0 10px 30px rgba(255, 105, 180, 0.2);
             width: 100%;
-            max-width: 400px; /* 大屏手机不超宽 */
+            max-width: 400px;
             text-align: center;
+            z-index: 10; /* 登录框层级最高 */
         }
 
         .login-box h2 {
             color: #e63946;
             margin-bottom: 30px;
-            font-size: 5vw; /* 相对屏幕宽度，手机自动适配 */
+            font-size: 5vw;
             line-height: 1.2;
         }
 
-        /* 密码输入框：手机端加大点击区域 */
         .password-input {
             width: 100%;
-            padding: 18px 15px; /* 手机端加高，好点击 */
+            padding: 18px 15px;
             border: 2px solid #ffccd5;
             border-radius: 10px;
-            font-size: 4.5vw; /* 文字适配手机 */
+            font-size: 4.5vw;
             margin-bottom: 20px;
             outline: none;
             transition: border-color 0.3s;
@@ -56,7 +66,6 @@
             border-color: #e63946;
         }
 
-        /* 登录按钮：手机端加高，加大字体 */
         .login-btn {
             width: 100%;
             padding: 18px;
@@ -73,7 +82,6 @@
             background: #d62828;
         }
 
-        /* 错误提示：手机端字体适配 */
         .error-tip {
             color: #e63946;
             margin-top: 15px;
@@ -81,7 +89,6 @@
             display: none;
         }
 
-        /* 大屏适配：避免文字过大 */
         @media (min-width: 400px) {
             .login-box h2 {
                 font-size: 1.8rem;
@@ -96,41 +103,197 @@
     </style>
 </head>
 <body>
+    <!-- 背景画布 -->
+    <canvas id="bg-canvas"></canvas>
+
     <div class="login-box">
-        <h2>💖 专属心动密码 💖</h2>
-        <input type="password" class="password-input" id="password" placeholder="宝宝，我们什么时候在一起的鸭~">
+        <h2>💖 宝 宝 💖<br>我们几月几个在一起的鸭~</h2>
+        <input type="password" class="password-input" id="password" placeholder="请输入密码解锁心动">
         <button class="login-btn" id="loginBtn">解锁我的心意</button>
-        <div class="error-tip" id="errorTip">居然不知道就当你按错了吧😢</div>
+        <div class="error-tip" id="errorTip">密码错误啦～再试试😜</div>
     </div>
 
     <script>
-        // 自定义密码（可修改）
-        const CORRECT_PASSWORD = "5201314";
+        // ========== 原有登录逻辑（不变） ==========
+        const CORRECT_PASSWORD = "0909";
+        let errorCount = 0;
 
         const passwordInput = document.getElementById('password');
         const loginBtn = document.getElementById('loginBtn');
         const errorTip = document.getElementById('errorTip');
 
-        // 登录验证
         loginBtn.addEventListener('click', function() {
             const inputPwd = passwordInput.value.trim();
             if (inputPwd === CORRECT_PASSWORD) {
                 window.location.href = 'transition.html';
+                errorCount = 0;
             } else {
+                errorCount++;
+                switch(errorCount) {
+                    case 1:
+                        errorTip.textContent = "居然错了我就当你按错了😢";
+                        break;
+                    case 2:
+                        errorTip.textContent = "难道你真的忘了嘛？😫";
+                        break;
+                    case 3:
+                        errorTip.textContent = "我生气了！🤬";
+                        break;
+                    case 4:
+                        errorTip.textContent = "好我告诉你（0909）";
+                        break;
+                    default:
+                        errorTip.textContent = "好我告诉你（0909）";
+                }
                 errorTip.style.display = 'block';
                 setTimeout(() => {
-                    errorTip.style.display = 'none';
+                    if (errorCount < 4) {
+                        errorTip.style.display = 'none';
+                    }
+                    passwordInput.value = '';
                 }, 3000);
-                passwordInput.value = '';
             }
         });
 
-        // 手机端回车登录
         passwordInput.addEventListener('keydown', function(e) {
             if (e.key === 'Enter') {
                 loginBtn.click();
             }
         });
+
+        // ========== 修正+加量后的动态背景（标准爱心+更多星星） ==========
+        class Heart {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.size = Math.random() * 10 + 5; // 爱心大小
+                this.heartbeatSpeed = Math.random() * 0.05 + 0.02; // 心跳速度
+                this.phase = Math.random() * Math.PI * 2; // 心跳相位（不同步）
+                this.color = `rgba(230, 57, 70, ${Math.random() * 0.6 + 0.4})`; // 粉色系
+            }
+
+            // 经典标准爱心绘制（视觉更贴合日常爱心）
+            draw(ctx) {
+                // 心跳缩放：sin曲线模拟“嘭嘭”跳动
+                const scale = 1 + Math.sin(this.phase) * 0.3;
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.scale(scale, scale);
+                ctx.fillStyle = this.color;
+
+                // 经典爱心路径（左右对称的饱满爱心）
+                ctx.beginPath();
+                ctx.moveTo(0, -this.size/2);
+                // 左半爱心（贝塞尔曲线）
+                ctx.bezierCurveTo(
+                    -this.size, -this.size,
+                    -this.size*1.5, this.size/2,
+                    0, this.size
+                );
+                // 右半爱心（贝塞尔曲线）
+                ctx.bezierCurveTo(
+                    this.size*1.5, this.size/2,
+                    this.size, -this.size,
+                    0, -this.size/2
+                );
+                ctx.closePath();
+                ctx.fill();
+
+                ctx.restore();
+                // 更新相位（保持心跳动）
+                this.phase += this.heartbeatSpeed;
+            }
+        }
+
+        class Star {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.size = Math.random() * 3 + 1; // 星星大小
+                this.speed = Math.random() * 0.2 + 0.05; // 移动速度
+                this.alpha = Math.random() * 0.8 + 0.2; // 透明度
+                this.flashSpeed = Math.random() * 0.02 + 0.01; // 闪烁速度
+            }
+
+            // 绘制闪烁星星
+            draw(ctx) {
+                // 闪烁效果：透明度随时间变化
+                this.alpha = 0.2 + Math.abs(Math.sin(Date.now() * this.flashSpeed)) * 0.8;
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.fillStyle = `rgba(255, 255, 255, ${this.alpha})`;
+                ctx.beginPath();
+                // 绘制标准五角星
+                for (let i = 0; i < 5; i++) {
+                    ctx.lineTo(
+                        Math.cos((18 + i * 72) * Math.PI / 180) * this.size,
+                        -Math.sin((18 + i * 72) * Math.PI / 180) * this.size
+                    );
+                    ctx.lineTo(
+                        Math.cos((54 + i * 72) * Math.PI / 180) * this.size / 2.5,
+                        -Math.sin((54 + i * 72) * Math.PI / 180) * this.size / 2.5
+                    );
+                }
+                ctx.closePath();
+                ctx.fill();
+                ctx.restore();
+                // 缓慢移动（从上到下）
+                this.y += this.speed;
+                // 超出屏幕重置
+                if (this.y > ctx.canvas.height) {
+                    this.y = -10;
+                    this.x = Math.random() * ctx.canvas.width;
+                }
+            }
+        }
+
+        // 初始化画布
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+
+        // 适配屏幕大小
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        // ✨ 核心修改：增加数量（爱心30个，星星150个）
+        const hearts = [];
+        const stars = [];
+        const HEART_COUNT =85; // 爱心数量（从15→30）
+        const STAR_COUNT = 500; // 星星数量（从80→150）
+
+        // 初始化爱心
+        for (let i = 0; i < HEART_COUNT; i++) {
+            hearts.push(new Heart(
+                Math.random() * canvas.width,
+                Math.random() * canvas.height
+            ));
+        }
+
+        // 初始化星星
+        for (let i = 0; i < STAR_COUNT; i++) {
+            stars.push(new Star(
+                Math.random() * canvas.width,
+                Math.random() * canvas.height
+            ));
+        }
+
+        // 动画循环
+        function animate() {
+            // 清空画布（半透明叠加，轨迹更柔和）
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // 绘制所有星星
+            stars.forEach(star => star.draw(ctx));
+            // 绘制所有爱心
+            hearts.forEach(heart => heart.draw(ctx));
+
+            requestAnimationFrame(animate);
+        }
+        animate();
     </script>
 </body>
 </html>
