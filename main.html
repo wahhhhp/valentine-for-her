@@ -240,10 +240,10 @@
         <div class="photo-carousel">
             <div class="photo-wrapper" id="photoWrapper"></div>
             <div class="photo-text" id="photoText"></div>
-            <!-- 核心修改1：初始数量从11改成8 -->
             <div class="photo-index" id="photoIndex">第 1 / 8 张</div>
         </div>
 
+        <!-- 核心修改：签名从“爱你的我”改为“爱你的Wahap” -->
         <div class="signature">
             —— 爱你的Wahap ❤️
         </div>
@@ -382,7 +382,7 @@
             }
         });
 
-        // 8张照片的列表（你提供的内容，已保留）
+        // 8张照片的列表（保留你更新后的文案和图片链接）
         const photoList = [
             { imgUrl: "https://s41.ax1x.com/2026/02/14/pZqWSIg.jpg",
             text: "送你的第一个玩偶，这应该是最早的了🧸（但也可能有更早的我相册里没有😬）" },
@@ -424,16 +424,13 @@
             const allImgs = photoWrapper.querySelectorAll('img');
             allImgs[currentPhotoIndex].classList.remove('active');
             photoText.classList.remove('active');
-            // 自动适配8张照片循环，无需修改（% photoList.length 会自动取8）
             currentPhotoIndex = (currentPhotoIndex + 1) % photoList.length;
             allImgs[currentPhotoIndex].classList.add('active');
             photoText.textContent = photoList[currentPhotoIndex].text;
             setTimeout(() => { photoText.classList.add('active'); }, 300);
-            // 核心修改2：数量提示从11改成8
             photoIndex.textContent = `第 ${currentPhotoIndex + 1} / 8 张`;
         }
 
-        // 保持8秒切换一次照片
         setInterval(switchPhoto, 8000);
     </script>
 </body>
