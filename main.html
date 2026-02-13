@@ -240,7 +240,8 @@
         <div class="photo-carousel">
             <div class="photo-wrapper" id="photoWrapper"></div>
             <div class="photo-text" id="photoText"></div>
-            <div class="photo-index" id="photoIndex">第 1 / 11 张</div>
+            <!-- 核心修改1：初始数量从11改成8 -->
+            <div class="photo-index" id="photoIndex">第 1 / 8 张</div>
         </div>
 
         <div class="signature">
@@ -381,18 +382,24 @@
             }
         });
 
+        // 8张照片的列表（你提供的内容，已保留）
         const photoList = [
-            { imgUrl: "https://s41.ax1x.com/2026/02/13/pZqs6Cq.jpg", text: "我们的第一次真正接触,也是认识你的开始😘（应该是那次玩我不是卧底的时候可惜没照片😕）" },
-            { imgUrl: "https://s41.ax1x.com/2026/02/13/pZqyWWt.jpg", text: "送你的第一个玩偶，这应该是最早的了🧸（但也可能有更早的我相册里没有😬）" },
-            { imgUrl: "https://s41.ax1x.com/2026/02/13/pZqy6dH.jpg", text: "这是最早期约会的照片也是我印象最深一次第，第一次见面第一次牵手，紧张到手心冒汗✨" },
-            { imgUrl: "https://s41.ax1x.com/2026/02/14/pZq6s10.jpg", text: "这是我送你的第一束花，也是第一次给别人买花💐" },
-            { imgUrl: "https://s41.ax1x.com/2026/02/14/pZq6ycV.jpg", text: "陪你过的第一个生日，愿你永远开心，🎂（其实第一次生日我们分手了🤧所以我欠你一次）" },
-            { imgUrl: "https://s41.ax1x.com/2026/02/14/pZq66XT.jpg", text: "这是你第一次给我过生日🎂，我很高兴也很感动，心想着这辈子取定你了（但是！！！！这时候我好丑啊头发😫）" },
-            { imgUrl: "https://s41.ax1x.com/2026/02/14/pZq6R74.jpg", text: "你这张照片是我最喜欢的一张，又帅又美，反正就是喜欢(❤ ω ❤)" },
-            { imgUrl: "https://s41.ax1x.com/2026/02/14/pZq6fAJ.jpg", text: "我第一次座摩天轮，也是和你的第一次，这次是我感觉最费体力的一次约会🤦‍♂️（jnm我也想选个好看的但是照片只能4:3）" },
-            { imgUrl: "https://s41.ax1x.com/2026/02/14/pZqcDVe.jpg", text: "这是我们第一次一起去乐8上班的时候拍的，幸福~（实话实说一直站着真累啊😫）" },
-            { imgUrl: "https://s41.ax1x.com/2026/02/14/pZqcrUH.jpg", text: "这是应该是我们第一次去私人影院拍照了，看电影，吃零食，聊天（还有甜蜜蜜😚）" },
-            { imgUrl: "https://s41.ax1x.com/2026/02/14/pZqcfr8.jpg", text: "这个戒指我到现在没摘过，带着就很幸福❤️" }
+            { imgUrl: "https://s41.ax1x.com/2026/02/14/pZqWSIg.jpg",
+            text: "送你的第一个玩偶，这应该是最早的了🧸（但也可能有更早的我相册里没有😬）" },
+            { imgUrl: "https://s41.ax1x.com/2026/02/14/pZqWtoD.jpg",
+            text: "这是最早期约会的照片也是我印象最深一次第，第一次见面第一次牵手，紧张到手心冒汗✨" },
+            { imgUrl: "https://s41.ax1x.com/2026/02/14/pZqRXsP.jpg",
+            text: "这是我送你的第一束花，也是第一次给别人买花💐" },
+            { imgUrl: "https://s41.ax1x.com/2026/02/14/pZqWUFe.jpg",
+            text: "陪你过的第一个生日，愿你永远开心，🎂（其实第一次生日我们分手了🤧所以我欠你一次）" },
+            { imgUrl: "https://s41.ax1x.com/2026/02/14/pZqWaJH.jpg",
+            text: "这是你第一次给我过生日🎂，我很高兴也很感动，心想着这辈子娶定你了（但是！！！！这时候我好丑啊头发😫）" },
+            { imgUrl: "https://s41.ax1x.com/2026/02/14/pZqcDVe.jpg",
+            text: "这是我们第一次一起去乐8上班的时候拍的，幸福~（实话实说一直站着真累啊😫）" },
+            { imgUrl: "https://s41.ax1x.com/2026/02/14/pZqWrOP.jpg",
+            text: "我走之前你得好朋友拍的，狠狠的撒了波狗粮🐶嘿嘿" },
+            { imgUrl: "https://s41.ax1x.com/2026/02/14/pZqcfr8.jpg",
+            text: "这个戒指我到现在没摘过，带着就很幸福❤️" }
         ];
 
         const photoWrapper = document.getElementById('photoWrapper');
@@ -400,6 +407,7 @@
         const photoIndex = document.getElementById('photoIndex');
         let currentPhotoIndex = 0;
 
+        // 加载8张照片到页面
         photoList.forEach((item, index) => {
             const img = document.createElement('img');
             img.src = item.imgUrl;
@@ -416,13 +424,16 @@
             const allImgs = photoWrapper.querySelectorAll('img');
             allImgs[currentPhotoIndex].classList.remove('active');
             photoText.classList.remove('active');
+            // 自动适配8张照片循环，无需修改（% photoList.length 会自动取8）
             currentPhotoIndex = (currentPhotoIndex + 1) % photoList.length;
             allImgs[currentPhotoIndex].classList.add('active');
             photoText.textContent = photoList[currentPhotoIndex].text;
             setTimeout(() => { photoText.classList.add('active'); }, 300);
-            photoIndex.textContent = `第 ${currentPhotoIndex + 1} / 11 张`;
+            // 核心修改2：数量提示从11改成8
+            photoIndex.textContent = `第 ${currentPhotoIndex + 1} / 8 张`;
         }
 
+        // 保持8秒切换一次照片
         setInterval(switchPhoto, 8000);
     </script>
 </body>
